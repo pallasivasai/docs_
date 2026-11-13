@@ -1,163 +1,234 @@
-# SAI Bank: Can Database-Level Payment Protection Reduce Digital-Banking Risk?
+# SAI Bank Security Research Report
+## Database-Level Transaction Integrity and 24-Hour Wrong-Payment Recovery
 
-A reproducible security and business-risk case study based on [SAI Bank](https://github.com/pallasivasai/saibank). It defines the business problem, explains the product workflow, inspects implementation evidence, generates a synthetic dataset, quantifies risk scenarios and prioritizes security improvements.
+**Project:** [SAI Bank](https://github.com/pallasivasai/saibank)  
+**Study type:** Repository-based design review + reproducible synthetic scenario analysis  
+**Dataset seed:** `20261113`  
+**Status:** Demonstration application; not production-certified
 
-> **Scope:** SAI Bank is a demonstration application, not a production bank or certified security product. No software can eliminate every cyber risk. The statistics are synthetic or repository-review counts, not real customer telemetry, confirmed fraud losses, or measured attack-prevention rates.
+> **Research integrity statement:** This report distinguishes implementation evidence, synthetic experiment outputs, test-fixture assumptions and production outcomes. Synthetic statistics are not real bank telemetry, actual fraud, recovered money, prevented loss or measured product efficacy. No claim is made that SAI Bank prevents all cyberattacks.
 
-## 1. Executive summary
+![SAI Bank executive security research dashboard](images/10_executive_research_dashboard.svg)
 
-SAI Bank focuses on a specific high-value banking problem: protecting the integrity of money movement and providing a controlled recovery path for eligible wrong payments.
+---
 
-The inspected repository demonstrates:
-- Atomic transfer processing with caller checks, validation, account-row locks, balance changes and linked ledger entries.
-- A 24-hour wrong-payment recovery procedure with identity, ownership, transaction-type and duplicate-reversal checks.
-- Negative-balance handling that freezes an account while a recovery deficit remains; later incoming credits can clear the deficit.
-- Initial Row-Level Security (RLS) policies for profiles, accounts and transactions.
+## Executive summary
 
-These are useful controls for transaction integrity and customer remediation. They do **not** independently prevent phishing, malware, credential theft, account takeover, insider misuse, denial of service or every API attack.
+SAI Bank addresses a specific financial-technology problem: how to keep internal account balances and ledger entries consistent during transfers, and how to provide a controlled recovery path when an eligible customer reports a wrong payment within 24 hours.
 
-## 2. Business problem
+The inspected code provides evidence of:
+- Database-level transfer validation, account-row locking, balance updates and linked ledger entries.
+- A 24-hour reversal procedure with caller, ownership, transaction-type and previous-reversal checks.
+- Negative-balance handling that freezes an account while a recovery deficit remains, with future credits able to clear the deficit.
+- Initial Row-Level Security (RLS) policies for selected data.
 
-**Question:** How can a digital bank reduce the impact of incorrect or unauthorized transfers without corrupting balances or losing the audit trail?
+These controls support transaction integrity and customer remediation. They do not, by themselves, address the full threat landscape: phishing, malware, stolen credentials, account takeover, session hijacking, API abuse, insider threats, denial of service or operational compromise require additional controls.
 
-| Risk | Business consequence | SAI Bank relevance |
-|---|---|---|
-| Concurrent transfer race | Overspending / inconsistent balances | Atomic database function and row locks |
-| Wrong recipient | Dispute and customer remediation | 24-hour recovery workflow |
-| Duplicate reversal | Double credit / ledger inconsistency | Reversal markers and prior-reversal checks |
-| Recipient spent funds | Recovery deficit | Negative-balance freeze and future-credit clearing |
-| Cross-account access | Privacy breach | RLS and ownership checks; full audit still needed |
-| Account takeover / credential stuffing | Unauthorized transfers | Not evidenced in inspected application code |
-| API abuse / replay | Automated abuse or duplicate requests | Rate limits and idempotency not evidenced |
+### Research snapshot
 
-### What happens in a concrete example?
+| Evidence category | Current result | Correct interpretation |
+|---|---:|---|
+| Generated transfer records | 40,000 | Synthetic dataset size |
+| Synthetic account identifiers | 2,500 | Fictional identifiers |
+| Planted suspicious labels | 2,412 (6.03%) | Generator-selected labels, not observed attack rate |
+| Notional value on labelled records | ₹45.43 lakh | Simulated transfer value, not loss |
+| Risk scenarios reviewed | 12 | Repository review categories |
+| Scenarios mapped as mitigated | 3 | Code evidence relevant to named scenarios |
+| Partial / needs review | 4 | Some evidence, but further validation required |
+| No specific control evidenced in inspected app code | 5 | Scoped code-review gap, not proof about every deployment layer |
 
-Suppose customer A sends ₹5,000 to customer B by mistake. A requests recovery two hours later.
+---
 
-1. The procedure authenticates A and checks that the original debit belongs to A.
-2. It checks the 24-hour deadline, transaction type and whether a reversal already exists.
-3. It locks the relevant account rows before changing balances.
-4. It writes compensating ledger entries and marks the original transaction as reversed.
-5. If B's balance cannot cover the debit, the negative-balance protection freezes B's account until future credits clear the deficit.
+## 1. Problem definition and business context
 
-This is an internal-ledger recovery flow. It does not guarantee reversal through an external bank, UPI rail or payment provider.
+Digital payment systems must preserve three things at once:
 
-![Wrong-payment problem and recovery workflow](images/07_wrong_payment_problem_flow.svg)
+1. **Balance integrity:** a transfer must not debit one account without correctly crediting the other.
+2. **Ledger integrity:** every balance movement must have traceable, linked records.
+3. **Customer remediation:** eligible mistaken transfers need a controlled recovery process that does not create unsupported funds or duplicate reversals.
 
-## 3. Why database-level processing matters
+### The concrete failure scenario
 
-Money movement should be one indivisible database operation. If the sender balance changes but the recipient balance or ledger write fails separately, records can disagree.
+Customer A sends ₹5,000 to customer B by mistake. A notices two hours later. B may still have the funds—or may already have spent some or all of them.
+
+A naive implementation that simply credits A can create an unbacked balance. A multi-step implementation can also fail halfway through, leaving account balances and ledger entries inconsistent.
+
+**Research question:** Can database-level controls preserve internal ledger integrity while enabling a bounded, auditable wrong-payment recovery workflow?
+
+## 2. SAI Bank product workflow
+
+![Wrong-payment recovery problem and workflow](images/07_wrong_payment_problem_flow.svg)
+
+### Recovery sequence
+
+1. A submits a recovery request within the configured 24-hour window.
+2. The database procedure authenticates the caller and verifies transaction ownership.
+3. It checks that the original transaction is an eligible debit and has not already been reversed.
+4. Relevant account rows are locked before balance changes.
+5. Compensating ledger entries are written and the original transaction is marked as reversed.
+6. If the recipient cannot cover the debit, the recipient can enter a negative balance and be frozen; future incoming credits can clear the deficit.
+
+**Important boundary:** the 24-hour period is a request window, not a guarantee that every transfer can be recovered. This describes the application's internal ledger. It cannot guarantee recovery from an external bank, UPI rail or payment provider.
+
+## 3. Transaction integrity architecture
 
 ![Atomic transfer and ledger sequence](images/08_atomic_transfer_sequence.svg)
 
-The inspected `transfer_money()` procedure performs authentication checks, validation, account-row locking, balance changes and linked debit/credit ledger writes inside one database function/transaction. The inspected `reverse_transaction()` procedure checks eligibility and writes compensating entries under account locks.
+The inspected `transfer_money()` procedure authenticates and validates the request, locks account rows, updates balances and writes linked debit/credit ledger entries within one database function/transaction. The inspected `reverse_transaction()` procedure checks caller identity, ownership, transaction type, previous reversal and the 24-hour deadline before writing compensating entries under account locks.
 
-This is protective only when every money-changing route uses the guarded procedures. The repository also contains a legacy Edge Function that appears to make balance and ledger changes as separate requests; if still reachable, it should be retired or refactored to call the atomic procedure.
+### Why atomicity matters
 
-## 4. Repository review and engineering caveats
+If a sender debit, recipient credit and ledger writes are separate operations, a failure between steps can leave an inconsistent state. A single database transaction is designed to commit all related changes together or roll them back.
 
-Inspected files:
+### Engineering caveat
+
+The repository also contains a legacy Edge Function that appears to make balance and ledger changes as separate requests. If this route remains reachable, it should be retired or refactored to call the atomic database procedure. Protection depends on every money-changing path enforcing the same guarded logic.
+
+## 4. Repository evidence review
+
+Inspected implementation files:
 - `drizzle/migrations/0000_transfer_and_24h_reversal_with_freeze.sql`
 - `supabase/migrations/20251124144103_42d0ffa9-ef97-4422-863c-ed276f9c8fcb.sql`
 - `supabase/functions/wrong-payment-reversal/index.ts` (legacy path)
 
-Important follow-ups:
-1. Route all money movement through the same atomic database procedures; verify the legacy path is unreachable or retire it.
-2. Review table grants, RLS policies, `SECURITY DEFINER` ownership, fixed `search_path` and function execute permissions together.
-3. Test deterministic lock ordering, deadlock retry and idempotency under concurrent requests.
-4. Add MFA/passkeys, rate limiting, device/session risk, customer alerts, session revocation and fraud monitoring.
-5. Perform independent threat modelling and penetration testing.
+| Risk / control objective | Evidence in inspected code | Assessment |
+|---|---|---|
+| Concurrent overspending | Account-row locks and balance validation in transfer procedure | Mitigates the named race scenario if all paths use it |
+| Wrong-recipient payment | 24-hour recovery workflow and compensating entries | Customer-remediation path; not attack detection |
+| Duplicate reversal | Reversal markers and previous-reversal checks | Relevant control; concurrent idempotency needs testing |
+| Recipient already spent funds | Negative-balance freeze and future-credit clearing | Internal-ledger deficit handling; no external-rail guarantee |
+| Cross-account data access | RLS and ownership checks | Partial; policies, grants and privileged functions need full audit |
+| Hijacked session | No dedicated device/session-risk control evidenced | Gap in inspected application evidence |
+| Account takeover | MFA/passkeys and anti-automation controls not evidenced | Gap in inspected application evidence |
+| Phishing / social engineering | No scam intervention or beneficiary cooling-off evidenced | Gap in inspected application evidence |
+| API rate abuse | Explicit rate limits not evidenced | Gap in inspected application evidence |
+| Replay | Idempotency key not evidenced in inspected SQL | Gap in inspected application evidence |
+| Privileged database access | `SECURITY DEFINER` functions exist; grants require review | Partial / review required |
+| SQL injection surface | Main transfer function uses parameterized arguments | Partial; audit all query paths and exposed RPCs |
 
-“Not evidenced in inspected files” does not prove a control is absent from every deployment layer. This is a scoped code review, not a production audit.
+“Not evidenced” means not found in the inspected application files; it does not prove a control is absent from every hosting, identity or infrastructure layer.
 
-## 5. Synthetic dataset and headline statistics
+## 5. Synthetic experiment design
 
-The generator uses NumPy and pandas with fixed seed `20261113`. It creates 40,000 fictional transfers and 2,500 synthetic account identifiers. Suspicious labels are deliberately planted for analysis; they are not observed attacks.
+The Python generator uses NumPy and pandas with a fixed seed (`20261113`). It creates 40,000 fictional transfers and 2,500 synthetic account identifiers, then plants labelled scenarios such as stolen sessions, account takeover, wrong recipient, rapid mule-style outflow, replay and privilege abuse.
 
-| Metric | Result | What it means |
+### Dataset results
+
+| Metric | Result | Interpretation |
 |---|---:|---|
-| Synthetic transfers | 40,000 | Generated test records |
-| Synthetic account identifiers | 2,500 | Fictional IDs in generated dataset |
-| Planted suspicious labels | 2,412 (6.03%) | Labels selected by generator, not real attack prevalence |
-| Notional attached to labelled events | ₹45.43 lakh | Simulated transfer value, not fraud loss |
-| Risk scenarios reviewed | 12 | Rows in the repository control-coverage map |
-| Scenarios mapped as mitigated | 3 / 12 (25.0%) | Specific code evidence mapped to named risks |
-| Partial coverage / review required | 4 / 12 (33.3%) | Some relevant control evidence, further validation needed |
-| No specific control evidenced | 5 / 12 (41.7%) | Gap in inspected application evidence |
+| Total transfers | 40,000 | Generated records |
+| Normal-labelled transfers | 37,588 | Generator label |
+| Suspicious-labelled transfers | 2,412 | Generator label; 6.03% by design |
+| Notional on suspicious-labelled records | ₹45.43 lakh | Sum of simulated transfer amounts |
+| Risk scenarios in control map | 12 | Repository-review categories |
+
+The ₹45.43 lakh value is **not** confirmed fraud loss, actual customer exposure, recovered money, loss avoided or ROI. The generator's planted 6.03% is not an estimate of real-world fraud prevalence.
+
+### Scenario distribution
+
+![Planted suspicious-event categories](images/02_attack_scenarios.svg)
+
+### Simulated notional distribution
+
+![Simulated transaction notional; not actual fraud loss](images/03_simulated_exposure.svg)
+
+## 6. Control coverage analysis
+
+![Evidence-based control coverage](images/04_control_coverage.svg)
 
 ![SAI Bank security coverage scorecard](images/09_security_coverage_scorecard.svg)
 
-The 25% / 33.3% / 41.7% values are **scenario classifications**, not an overall security score or attack-blocking percentage. The ₹45.43 lakh notional is not actual fraud loss, recovered money, loss avoided or ROI.
+The repository review maps 12 named scenarios into three evidence classes:
 
-## 6. Control-test fixture interpretation
+| Classification | Count | Share of reviewed scenarios |
+|---|---:|---:|
+| Mitigates | 3 | 25.0% |
+| Partial / review required | 4 | 33.3% |
+| No specific control evidenced in inspected app code | 5 | 41.7% |
 
-The repository contains seven deterministic illustrative test-fixture rows, each with 1,000 hypothetical attempts. Four rows assume a control rejects the named scenario; three rows represent scenarios for which no corresponding control was evidenced. These are **designed fixture assumptions**, not 7,000 live requests, executed penetration tests, or measured production pass rates.
+These are **scenario classifications**, not an overall security score, a percentage of attacks stopped, or a production efficacy measurement. A “mitigates” mapping applies only to the stated scenario and assumptions.
 
-| Fixture group | Rows | Interpretation |
-|---|---:|---|
-| Atomic race, duplicate reversal, 24-hour eligibility, cross-account negative test | 4 | Expected control outcome under stated assumptions; must be run against a deployed test environment |
-| Hijacked session, credential stuffing, replay/idempotency | 3 | No dedicated control evidenced in inspected code; implementation and testing required |
+## 7. Test evidence: what is and is not measured
 
-Do not interpret the fixture values as proof that SAI Bank blocks 100% of these attacks. Actual effectiveness requires executable tests against the deployed application and database.
+The current `synthetic_control_tests.csv` contains seven deterministic fixture rows, each describing 1,000 hypothetical attempts. Four rows assume a control rejects the named scenario; three rows represent controls not evidenced in inspected code.
 
-## 7. Visual analysis
+![Illustrative control-test fixture matrix](images/05_control_test_matrix.svg)
 
-### 7.1 Synthetic transfer activity
-![Synthetic transfer activity](images/01_synthetic_activity.svg)
+These rows are **test-fixture assumptions**, not 7,000 live requests, executed penetration tests, or measured production pass rates. They must not be reported as “100% attack prevention.”
 
-### 7.2 Planted suspicious-event categories
-![Planted suspicious-event categories](images/02_attack_scenarios.svg)
+### Required executable test programme
 
-### 7.3 Simulated transaction notional
-![Simulated notional exposure; not actual fraud loss](images/03_simulated_exposure.svg)
+| Test family | Minimum evidence to collect | Success criterion |
+|---|---|---|
+| Concurrent transfers | Parallel requests, before/after balances, ledger rows | No overspend; balances reconcile |
+| Duplicate recovery | Concurrent repeated reversal requests | Exactly one effective reversal |
+| Recovery window | Boundary tests before, at and after 24 hours | Eligibility matches documented rule |
+| Authorization | Cross-user read/write and RPC attempts | Unauthorized operations denied |
+| Negative-balance freeze | Recovery when recipient has insufficient funds | Freeze remains until deficit cleared |
+| Replay/idempotency | Re-submit same request and idempotency key | No duplicate money movement |
+| Authentication/session | Stolen/expired/revoked session test cases | Invalid or risky sessions rejected |
+| API abuse | Rate-limit and burst tests | Limits enforced and logged |
 
-### 7.4 Evidence-based control coverage
-![Control coverage from inspected code](images/04_control_coverage.svg)
+No pass rates should be published until these tests are implemented, executed against a controlled environment, and their raw outputs are retained.
 
-### 7.5 Deterministic fixture assumptions
-![Illustrative control-test matrix](images/05_control_test_matrix.svg)
+## 8. Security coverage roadmap
 
-### 7.6 24-hour recovery lifecycle
-![24-hour recovery lifecycle](images/06_24h_recovery_flow.svg)
-
-## 8. Recommendations by priority
-
-| Priority | Improvement | Expected value | Verification |
+| Priority | Workstream | Why it matters | Verification evidence |
 |---|---|---|---|
-| P0 | Retire legacy multi-request money-movement path | Prevent split balance/ledger updates | Deployed-route review + integration tests |
-| P0 | Audit RLS, grants and privileged functions | Reduce unauthorized data/function access | Negative authorization and SQL privilege tests |
-| P0 | Add idempotency, deterministic lock ordering and deadlock retry | Safer retries and concurrent requests | Parallel transfer and replay tests |
-| P1 | MFA/passkeys and step-up confirmation | Reduce account-takeover impact | Authentication journey tests |
-| P1 | Login/OTP/transfer rate limits and bot controls | Reduce automated abuse | Abuse and load tests |
-| P1 | Device/session anomaly signals, alerts and revocation | Faster detection and containment | New-device/session simulations |
-| P1 | Scam warnings and beneficiary cooling-off | Reduce social-engineering impact | Controlled journey tests |
-| P2 | Tamper-resistant audit stream and operational alerts | Better investigation and response | Alert and retention tests |
-| P2 | Independent penetration test and retest | Validate assumptions beyond code review | External assessment |
+| P0 | Retire legacy multi-request money-movement path | Avoid split balance and ledger changes | Deployed-route review and integration tests |
+| P0 | Audit RLS, grants, `SECURITY DEFINER`, ownership and execute permissions | Reduce unauthorized access and privilege misuse | SQL privilege audit and negative authorization tests |
+| P0 | Deterministic lock ordering, deadlock retry and idempotency | Safer concurrency and request retries | Parallel opposing transfers and replay tests |
+| P1 | MFA/passkeys and step-up checks for risky transfers | Reduce account-takeover impact | Authentication journey tests |
+| P1 | Rate limits and bot controls | Reduce credential stuffing and automated API abuse | Abuse/load tests |
+| P1 | Device/session anomaly signals, alerts and revocation | Improve detection and containment | Session-risk simulations |
+| P1 | Scam warnings and beneficiary cooling-off | Reduce social-engineering impact | Controlled customer journey tests |
+| P2 | Tamper-resistant audit stream and centralized alerts | Improve investigation and response | Alert, retention and tamper tests |
+| P2 | Independent threat model and penetration test | Validate assumptions beyond code review | External assessment and remediation retest |
 
-## 9. Limitations
+## 9. Business impact measurement plan
 
-- SAI Bank is a demo application, not production-readiness certification.
+The current synthetic dataset cannot establish real money saved or customer outcomes. Once instrumented in a controlled pilot, measure:
+
+- Eligible recovery requests and completion time.
+- Recovered amount, outstanding deficit and unrecovered amount.
+- Duplicate/replayed requests rejected.
+- Ledger reconciliation exceptions.
+- Fraud alerts reviewed and confirmed outcomes.
+- Support handling time and customer resolution time.
+- False-positive rate and customer friction.
+- Operating cost per reviewed incident.
+
+Report numerator, denominator, measurement period, source system and exclusions for every KPI. Do not label transaction notional as loss prevented.
+
+## 10. Limitations and responsible interpretation
+
+- SAI Bank is a demonstration app, not a production-readiness certification.
 - Repository inspection does not prove which code paths are deployed or reachable.
 - Synthetic data has planted labels and simplified behaviour; it cannot estimate real fraud prevalence.
-- A scenario marked “mitigates” applies only to its stated assumptions.
-- No live attack simulation, independent penetration test, or production efficacy study was performed.
+- Control mappings are qualitative code-review judgments.
+- Fixture rows are not executed security-test results.
+- No live attack simulation, independent penetration test, database execution test or production efficacy study was performed.
 - Internal-ledger recovery cannot guarantee funds can be retrieved from external banks or payment rails.
+- Comprehensive cyber defence requires identity, application, infrastructure, people and operational controls.
 
-## 10. Reproduce
+## 11. Reproducibility
+
+From the repository root:
 
 ```bash
-python -m pip install -r requirements.txt
-python src/generate_data.py
-python src/analyze.py
-python src/render_svg_charts.py
+python -m pip install -r case-studies/sai-bank-security/requirements.txt
+python case-studies/sai-bank-security/src/generate_data.py
+python case-studies/sai-bank-security/src/analyze.py
+python case-studies/sai-bank-security/src/render_svg_charts.py
 ```
 
-The scripts regenerate the synthetic data, result tables and chart files with a fixed seed.
+The fixed seed makes the generated dataset reproducible. The scripts export CSV/JSON results and chart assets. Reproducibility does not convert synthetic data into real-world evidence.
 
-## 11. Links
+## 12. References and project links
 
-- SAI Bank source: https://github.com/pallasivasai/saibank
-- SAI Bank demo: https://saibank.lovable.app/
-- Companion analytics repository: https://github.com/pallasivasai/docs_
+- [SAI Bank source repository](https://github.com/pallasivasai/saibank)
+- [SAI Bank demo](https://saibank.lovable.app/)
+- [Companion analytics repository](https://github.com/pallasivasai/docs_)
+- [Generated chart assets](images/)
 
-**Conclusion:** SAI Bank demonstrates useful database-level patterns for safer transfers and a bounded wrong-payment recovery workflow. It can be developed into a broader banking-security product, but comprehensive protection requires additional identity, fraud, API, device, monitoring and operational controls plus independent validation.
+**Conclusion:** SAI Bank demonstrates useful database-level patterns for safer internal transfers and a bounded wrong-payment recovery workflow. It is a credible foundation for further fintech security engineering, but broader protection requires the roadmap above and independent validation. The defensible claim is specific risk reduction supported by evidence—not elimination of all cyber issues.
