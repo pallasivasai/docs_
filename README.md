@@ -8,6 +8,8 @@ A research-style case study of [SAI Bank](https://github.com/pallasivasai/saiban
 
 ![SAI Bank executive security research dashboard](case-studies/sai-bank-security/images/10_executive_research_dashboard.svg)
 
+![Advanced synthetic analytics dashboard](case-studies/sai-bank-security/images/11_advanced_statistics.svg)
+
 ## Research question
 
 Can database-level controls make internal transfers safer and provide a controlled, auditable path to recover eligible wrong payments within 24 hours?
@@ -38,14 +40,27 @@ The inspected transfer procedure validates and locks accounts, updates both bala
 |---|---:|---|
 | Generated transfers | 40,000 | Synthetic dataset |
 | Synthetic account identifiers | 2,500 | Synthetic dataset |
-| Planted suspicious labels | 2,412 (6.03%) | Generator-selected labels |
-| Simulated notional on labelled events | ₹45.43 lakh | Synthetic transaction value |
+| Planted suspicious labels | 2,403 (6.01%) | Generator-selected labels |
+| Simulated notional on labelled events | ₹43.93 lakh | Synthetic transaction value |
 | Risk scenarios reviewed | 12 | Repository code-review map |
 | Scenarios mapped as mitigated | 3 / 12 | Qualitative code evidence |
 | Partial / review required | 4 / 12 | Qualitative code evidence |
 | No specific control evidenced in inspected app code | 5 / 12 | Scoped code-review gap |
 
 The 6.03% is not real attack prevalence. ₹45.43 lakh is not fraud loss, money recovered, loss avoided or ROI. The 3/4/5 mapping is not an attack-block rate or an overall security score.
+
+### Advanced statistical profile
+
+| Measure | Result | Evidence type |
+|---|---:|---|
+| Median transfer amount | ₹1,094.48 | Synthetic sample P50 |
+| 95th percentile transfer | ₹5,715.43 | Synthetic sample P95 |
+| 99th percentile transfer | ₹11,251.88 | Synthetic sample P99 |
+| Wilson 95% interval for planted-label share | 5.78%–6.24% | Synthetic sampling interval only |
+| Monthly transfer volume | 3,071–3,495 | Synthetic month-to-month range |
+| Sender concentration (HHI) | 4.70 / 10,000 | Descriptive synthetic diagnostic |
+
+These statistics describe the seeded generator output—not real customers, fraud prevalence, risk prediction or production performance. See the [statistical appendix](case-studies/sai-bank-security/STATISTICAL_APPENDIX.md) for definitions and caveats.
 
 ## 4. Security coverage
 
@@ -93,6 +108,7 @@ The [complete SAI Bank Security Research Report](case-studies/sai-bank-security/
 - [SAI Bank source repository](https://github.com/pallasivasai/saibank)
 - [SAI Bank demo](https://saibank.lovable.app/)
 - [Full research report](case-studies/sai-bank-security/README.md)
+- [Statistical appendix](case-studies/sai-bank-security/STATISTICAL_APPENDIX.md)
 - [Chart assets](case-studies/sai-bank-security/images/)
 
 **Conclusion:** SAI Bank demonstrates useful controls for internal transaction integrity and eligible wrong-payment recovery. It is a foundation for a broader fintech security platform, not a claim that all cyber issues are eliminated. Every broader security claim must be backed by implemented controls, executed tests and independent validation.
