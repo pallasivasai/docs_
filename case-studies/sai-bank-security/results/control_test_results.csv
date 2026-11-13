@@ -1,0 +1,8 @@
+test_case,simulated_attempts,blocked_or_rejected_by_documented_control,not_covered_or_unverified,test_assumption,control_test_pass_rate_pct
+Atomic transfer / race-condition test,1000,1000,0,Synthetic concurrent requests,100.0
+Duplicate reversal test,1000,1000,0,Repeated request against already reversed transfer,100.0
+24-hour recovery eligibility test,1000,1000,0,Synthetic timestamps inside recovery window,100.0
+Cross-account authorization negative test,1000,1000,0,Assumes deployed RLS policies,100.0
+Hijacked-session attack test,1000,0,1000,No MFA/session-risk feature evidenced,0.0
+Credential-stuffing attack test,1000,0,1000,No rate-limit or bot-control evidence,0.0
+Replay/idempotency attack test,1000,0,1000,No idempotency key evidenced,0.0
