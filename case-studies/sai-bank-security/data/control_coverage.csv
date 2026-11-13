@@ -1,0 +1,13 @@
+scenario_id,business_problem,SAI_Bank_control_or_gap,coverage_assessment,important_limitation
+wrong_recipient,User mistake / payment dispute,24-hour recovery workflow; linked compensating ledger entries,partial,Recovery is a customer-remediation path not an attack detector
+insufficient_funds_race,Concurrent overspending,Row-level locks + atomic balance validation,mitigates,Assumes all balance-changing paths use guarded database procedure
+duplicate_reversal,Repeated recovery request,reversed_at + is_reversal checks,mitigates,Idempotency must be verified under concurrent requests
+negative_balance_recovery,Recipient spent funds before reversal,Negative-balance freeze + future-credit clearing,mitigates,Does not recover funds from external payment rails
+cross_account_read,User reads another customer's records,RLS policies + ownership checks,partial,Audit every table policy SECURITY DEFINER function and grant
+stolen_session,Attacker uses a hijacked authenticated session,No dedicated device/session-risk control evidenced,not_covered,Add MFA session revocation and risk-based step-up
+account_takeover,Credential stuffing / compromised password,Anti-automation controls not evidenced,not_covered,Add MFA/passkeys rate limiting and anomaly alerts
+phishing_social_engineering,Customer manipulated into approving transfer,Payee confirmation/scam intervention not evidenced,not_covered,Add beneficiary cooling-off and risk-based holds
+api_rate_abuse,Automated API abuse,Explicit rate limits not evidenced,not_covered,Add edge/API quotas and bot controls
+replay_attempt,Replay of a prior transfer request,Idempotency key not evidenced in inspected SQL,not_covered,Add unique idempotency keys and nonce validation
+privilege_abuse,Over-privileged database identity,SECURITY DEFINER exists; grants require review,partial,Least privilege and independent audit
+sql_injection,Malicious input alters query intent,Main transfer uses parameterized function arguments,partial,Audit every query path and exposed RPC function
