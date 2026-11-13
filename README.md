@@ -212,3 +212,28 @@ Built and tested with Python 3.13, pandas 3.0, NumPy 2.5, matplotlib 3.11 and se
 ## Additional case studies
 
 - **[SAI Bank Security & Payment Protection](case-studies/sai-bank-security/README.md)** — a reproducible synthetic-data study of database transaction integrity, 24-hour wrong-payment recovery, negative-balance freezes, control coverage, remaining cyber-risk gaps, and six generated charts.
+
+
+## SAI Bank security analysis — generated statistics
+
+This case study includes six generated static charts based on a reproducible synthetic banking dataset. The figures are illustrative simulations, not real bank telemetry or measured fraud-prevention rates.
+
+### 1. Synthetic banking activity
+![Synthetic banking activity](case-studies/sai-bank-security/images/01_synthetic_activity.svg)
+
+### 2. Suspicious-event scenarios
+![Suspicious event categories](case-studies/sai-bank-security/images/02_attack_scenarios.svg)
+
+### 3. Simulated transaction-value exposure
+![Simulated exposure](case-studies/sai-bank-security/images/03_simulated_exposure.svg)
+
+### 4. Documented security-control coverage
+![Control coverage](case-studies/sai-bank-security/images/04_control_coverage.svg)
+
+### 5. Synthetic control-test matrix
+![Control test matrix](case-studies/sai-bank-security/images/05_control_test_matrix.svg)
+
+### 6. SAI Bank 24-hour recovery flow
+![24-hour recovery flow](case-studies/sai-bank-security/images/06_24h_recovery_flow.svg)
+
+[Read the full SAI Bank security case study](case-studies/sai-bank-security/README.md) for the methodology, repository review, CSV results, reproducible Python scripts, limitations and recommendations.
