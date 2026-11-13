@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="650" viewBox="0 0 1100 650">
+<rect width="1100" height="650" fill="#f7f9fc"/>
+<text x="52" y="58" font-family="Arial" font-size="30" font-weight="700" fill="#172033">SAI Bank | Advanced synthetic analytics</text>
+<text x="52" y="88" font-family="Arial" font-size="15" fill="#667085">40,000 generated transfers • 2,500 fictional accounts • Seed 20261113 • Not production telemetry</text>
+<g font-family="Arial">
+<rect x="52" y="120" width="235" height="112" rx="14" fill="#fff" stroke="#dbe2ea"/><text x="74" y="154" font-size="13" fill="#667085">SYNTHETIC TRANSFERS</text><text x="74" y="202" font-size="34" font-weight="700" fill="#172033">40,000</text>
+<rect x="307" y="120" width="235" height="112" rx="14" fill="#fff" stroke="#dbe2ea"/><text x="329" y="154" font-size="13" fill="#667085">PLANTED LABEL SHARE</text><text x="329" y="202" font-size="34" font-weight="700" fill="#172033">6.01%</text>
+<rect x="562" y="120" width="235" height="112" rx="14" fill="#fff" stroke="#dbe2ea"/><text x="584" y="154" font-size="13" fill="#667085">SUSPICIOUS NOTIONAL</text><text x="584" y="202" font-size="31" font-weight="700" fill="#172033">₹43.93L</text>
+<rect x="817" y="120" width="235" height="112" rx="14" fill="#fff" stroke="#dbe2ea"/><text x="839" y="154" font-size="13" fill="#667085">MEDIAN TRANSFER</text><text x="839" y="202" font-size="34" font-weight="700" fill="#172033">₹1,094</text>
+<text x="52" y="285" font-size="19" font-weight="700" fill="#172033">Planted suspicious-label composition</text>
+<text x="52" y="311" font-size="12" fill="#667085">Counts are generator labels; wrong-recipient events may be user error.</text>
+</g>
+<g font-family="Arial" font-size="13" fill="#344054">
+<text x="52" y="356">Wrong recipient</text><rect x="225" y="338" width="438" height="24" rx="5" fill="#2563eb"/><text x="678" y="356">731</text>
+<text x="52" y="402">Stolen session</text><rect x="225" y="384" width="283" height="24" rx="5" fill="#2563eb"/><text x="523" y="402">473</text>
+<text x="52" y="448">Rapid mule outflow</text><rect x="225" y="430" width="215" height="24" rx="5" fill="#2563eb"/><text x="455" y="448">360</text>
+<text x="52" y="494">Account takeover</text><rect x="225" y="476" width="196" height="24" rx="5" fill="#2563eb"/><text x="436" y="494">328</text>
+<text x="52" y="540">Replay attempt</text><rect x="225" y="522" width="171" height="24" rx="5" fill="#2563eb"/><text x="411" y="540">286</text>
+<text x="52" y="586">Privilege abuse</text><rect x="225" y="568" width="135" height="24" rx="5" fill="#2563eb"/><text x="375" y="586">225</text>
+</g>
+<rect x="52" y="615" width="1000" height="1" fill="#dbe2ea"/>
+<text x="52" y="638" font-family="Arial" font-size="12" fill="#667085">₹43.93 lakh is simulated transfer notional, not confirmed fraud loss, recovered funds or loss avoided.</text>
+</svg>
