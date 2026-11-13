@@ -30,6 +30,20 @@ These controls are relevant to transaction integrity, bounded authorization and 
 | Account takeover / credential stuffing | Unauthorized transfers | Not evidenced in inspected application code |
 | API abuse / replay | Automated abuse or duplicate requests | Rate limits and idempotency not evidenced |
 
+### What happens in a concrete example?
+
+Suppose customer A sends ₹5,000 to customer B by mistake. A requests recovery 2 hours later.
+
+1. The procedure authenticates A and checks that the original debit belongs to A.
+2. It checks the 24-hour deadline, transaction type and whether a reversal already exists.
+3. It locks the relevant account rows before changing balances.
+4. It writes compensating ledger entries and marks the original transaction as reversed.
+5. If B's balance cannot cover the debit, the negative-balance protection freezes B's account until future credits clear the deficit.
+
+This is an internal-ledger recovery flow. It does not guarantee reversal through an external bank, UPI rail or payment provider.
+
+![Wrong-payment problem and recovery workflow](images/07_wrong_payment_problem_flow.svg)
+
 ## 3. Repository review
 
 Primary source: [pallasivasai/saibank](https://github.com/pallasivasai/saibank)
@@ -49,6 +63,8 @@ Inspected files:
 5. MFA/passkeys, rate limiting, idempotency keys, device/session anomaly controls and centralized fraud alerting were not evidenced in the inspected files. “Not evidenced” does not prove they are absent from every deployment layer.
 
 ## 4. How the controls work
+
+![Atomic transfer and ledger sequence](images/08_atomic_transfer_sequence.svg)
 
 ### Atomic transfer
 `Authenticate → lock sender and recipient → validate funds/state → update both balances → write linked entries → commit`
