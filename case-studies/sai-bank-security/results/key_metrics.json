@@ -1,0 +1,14 @@
+{
+  "dataset_type": "synthetic_simulation_only",
+  "random_seed": 20261113,
+  "total_synthetic_transfers": 40000,
+  "synthetic_accounts": 2500,
+  "simulated_suspicious_attempts": 2412,
+  "simulated_suspicious_attempt_share_pct": 6.03,
+  "normal_synthetic_transfers": 37588,
+  "suspicious_attempt_notional_inr": 4543131.29,
+  "warning": "Notional of simulated suspicious transfers is not confirmed fraud loss, prevented loss, or actual bank telemetry.",
+  "coverage_counts": {"not_covered": 5, "partial": 4, "mitigates": 3},
+  "documented_control_test_cases": 7,
+  "test_results_are": "deterministic synthetic fixtures; not production efficacy estimates"
+}
