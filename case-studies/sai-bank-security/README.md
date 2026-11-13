@@ -10,6 +10,8 @@
 
 ![SAI Bank executive security research dashboard](images/10_executive_research_dashboard.svg)
 
+![Advanced synthetic analytics dashboard](images/11_advanced_statistics.svg)
+
 ---
 
 ## Executive summary
@@ -30,8 +32,8 @@ These controls support transaction integrity and customer remediation. They do n
 |---|---:|---|
 | Generated transfer records | 40,000 | Synthetic dataset size |
 | Synthetic account identifiers | 2,500 | Fictional identifiers |
-| Planted suspicious labels | 2,412 (6.03%) | Generator-selected labels, not observed attack rate |
-| Notional value on labelled records | ₹45.43 lakh | Simulated transfer value, not loss |
+| Planted suspicious labels | 2,403 (6.01%) | Generator-selected labels, not observed attack rate |
+| Notional value on labelled records | ₹43.93 lakh | Simulated transfer value, not loss |
 | Risk scenarios reviewed | 12 | Repository review categories |
 | Scenarios mapped as mitigated | 3 | Code evidence relevant to named scenarios |
 | Partial / needs review | 4 | Some evidence, but further validation required |
@@ -117,12 +119,12 @@ The Python generator uses NumPy and pandas with a fixed seed (`20261113`). It cr
 | Metric | Result | Interpretation |
 |---|---:|---|
 | Total transfers | 40,000 | Generated records |
-| Normal-labelled transfers | 37,588 | Generator label |
-| Suspicious-labelled transfers | 2,412 | Generator label; 6.03% by design |
-| Notional on suspicious-labelled records | ₹45.43 lakh | Sum of simulated transfer amounts |
+| Normal-labelled transfers | 37,597 | Generator label |
+| Suspicious-labelled transfers | 2,403 | Generator label; 6.01% in this generated sample |
+| Notional on suspicious-labelled records | ₹43.93 lakh | Sum of simulated transfer amounts |
 | Risk scenarios in control map | 12 | Repository-review categories |
 
-The ₹45.43 lakh value is **not** confirmed fraud loss, actual customer exposure, recovered money, loss avoided or ROI. The generator's planted 6.03% is not an estimate of real-world fraud prevalence.
+The ₹43.93 lakh value is **not** confirmed fraud loss, actual customer exposure, recovered money, loss avoided or ROI. The generator's planted approximately 6.01% sample share is not an estimate of real-world fraud prevalence.
 
 ### Scenario distribution
 
@@ -132,7 +134,15 @@ The ₹45.43 lakh value is **not** confirmed fraud loss, actual customer exposur
 
 ![Simulated transaction notional; not actual fraud loss](images/03_simulated_exposure.svg)
 
-## 6. Control coverage analysis
+## 6. Advanced statistical analysis
+
+![Advanced synthetic analytics dashboard](images/11_advanced_statistics.svg)
+
+The reproducible statistical appendix reports transaction percentiles (P50/P90/P95/P99), mean and median values, a Wilson interval for the generated-label share, monthly variability, suspicious-label composition and sender-notional concentration (HHI). These are descriptive statistics for the seeded synthetic sample only. The interval is not a real-world fraud-prevalence interval, and HHI is not a fraud score.
+
+See the [full statistical appendix](STATISTICAL_APPENDIX.md) for definitions, exact values, caveats and reproduction steps.
+
+## 7. Control coverage analysis
 
 ![Evidence-based control coverage](images/04_control_coverage.svg)
 
@@ -148,7 +158,7 @@ The repository review maps 12 named scenarios into three evidence classes:
 
 These are **scenario classifications**, not an overall security score, a percentage of attacks stopped, or a production efficacy measurement. A “mitigates” mapping applies only to the stated scenario and assumptions.
 
-## 7. Test evidence: what is and is not measured
+## 8. Test evidence: what is and is not measured
 
 The current `synthetic_control_tests.csv` contains seven deterministic fixture rows, each describing 1,000 hypothetical attempts. Four rows assume a control rejects the named scenario; three rows represent controls not evidenced in inspected code.
 
@@ -171,7 +181,7 @@ These rows are **test-fixture assumptions**, not 7,000 live requests, executed p
 
 No pass rates should be published until these tests are implemented, executed against a controlled environment, and their raw outputs are retained.
 
-## 8. Security coverage roadmap
+## 9. Security coverage roadmap
 
 | Priority | Workstream | Why it matters | Verification evidence |
 |---|---|---|---|
@@ -185,7 +195,7 @@ No pass rates should be published until these tests are implemented, executed ag
 | P2 | Tamper-resistant audit stream and centralized alerts | Improve investigation and response | Alert, retention and tamper tests |
 | P2 | Independent threat model and penetration test | Validate assumptions beyond code review | External assessment and remediation retest |
 
-## 9. Business impact measurement plan
+## 10. Business impact measurement plan
 
 The current synthetic dataset cannot establish real money saved or customer outcomes. Once instrumented in a controlled pilot, measure:
 
@@ -200,7 +210,7 @@ The current synthetic dataset cannot establish real money saved or customer outc
 
 Report numerator, denominator, measurement period, source system and exclusions for every KPI. Do not label transaction notional as loss prevented.
 
-## 10. Limitations and responsible interpretation
+## 11. Limitations and responsible interpretation
 
 - SAI Bank is a demonstration app, not a production-readiness certification.
 - Repository inspection does not prove which code paths are deployed or reachable.
@@ -211,7 +221,7 @@ Report numerator, denominator, measurement period, source system and exclusions 
 - Internal-ledger recovery cannot guarantee funds can be retrieved from external banks or payment rails.
 - Comprehensive cyber defence requires identity, application, infrastructure, people and operational controls.
 
-## 11. Reproducibility
+## 12. Reproducibility
 
 From the repository root:
 
@@ -224,7 +234,7 @@ python case-studies/sai-bank-security/src/render_svg_charts.py
 
 The fixed seed makes the generated dataset reproducible. The scripts export CSV/JSON results and chart assets. Reproducibility does not convert synthetic data into real-world evidence.
 
-## 12. References and project links
+## 13. References and project links
 
 - [SAI Bank source repository](https://github.com/pallasivasai/saibank)
 - [SAI Bank demo](https://saibank.lovable.app/)
