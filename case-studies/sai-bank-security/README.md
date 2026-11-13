@@ -12,6 +12,8 @@
 
 ![Advanced synthetic analytics dashboard](images/11_advanced_statistics.svg)
 
+![Threat coverage and defense roadmap](images/12_threat_coverage_roadmap.svg)
+
 ---
 
 ## Executive summary
@@ -158,7 +160,15 @@ The repository review maps 12 named scenarios into three evidence classes:
 
 These are **scenario classifications**, not an overall security score, a percentage of attacks stopped, or a production efficacy measurement. A “mitigates” mapping applies only to the stated scenario and assumptions.
 
-## 8. Test evidence: what is and is not measured
+## 8. Defense-in-depth: current evidence vs planned coverage
+
+![Current versus planned threat coverage](images/12_threat_coverage_roadmap.svg)
+
+The review currently finds direct mitigation evidence for **3/12 scenarios (25.0%)**, partial evidence for **4/12 (33.3%)**, and no specific control in the inspected app code for **5/12 (41.7%)**. The new roadmap maps a proposed control and validation workstream to **12/12 scenarios (100% planning coverage)**. This is a planning-completeness measure—not a prevention rate, implementation status or proof that most cyberattacks are stopped.
+
+The [Threat Coverage Roadmap](THREAT_COVERAGE_ROADMAP.md) lists each scenario, existing evidence, proposed controls and required verification. Broad protection claims must wait until those controls are implemented, tested and independently assessed.
+
+## 9. Test evidence: what is and is not measured
 
 The current `synthetic_control_tests.csv` contains seven deterministic fixture rows, each describing 1,000 hypothetical attempts. Four rows assume a control rejects the named scenario; three rows represent controls not evidenced in inspected code.
 
@@ -181,7 +191,7 @@ These rows are **test-fixture assumptions**, not 7,000 live requests, executed p
 
 No pass rates should be published until these tests are implemented, executed against a controlled environment, and their raw outputs are retained.
 
-## 9. Security coverage roadmap
+## 10. Security coverage roadmap
 
 | Priority | Workstream | Why it matters | Verification evidence |
 |---|---|---|---|
@@ -195,7 +205,7 @@ No pass rates should be published until these tests are implemented, executed ag
 | P2 | Tamper-resistant audit stream and centralized alerts | Improve investigation and response | Alert, retention and tamper tests |
 | P2 | Independent threat model and penetration test | Validate assumptions beyond code review | External assessment and remediation retest |
 
-## 10. Business impact measurement plan
+## 11. Business impact measurement plan
 
 The current synthetic dataset cannot establish real money saved or customer outcomes. Once instrumented in a controlled pilot, measure:
 
@@ -210,7 +220,7 @@ The current synthetic dataset cannot establish real money saved or customer outc
 
 Report numerator, denominator, measurement period, source system and exclusions for every KPI. Do not label transaction notional as loss prevented.
 
-## 11. Limitations and responsible interpretation
+## 12. Limitations and responsible interpretation
 
 - SAI Bank is a demonstration app, not a production-readiness certification.
 - Repository inspection does not prove which code paths are deployed or reachable.
@@ -221,7 +231,7 @@ Report numerator, denominator, measurement period, source system and exclusions 
 - Internal-ledger recovery cannot guarantee funds can be retrieved from external banks or payment rails.
 - Comprehensive cyber defence requires identity, application, infrastructure, people and operational controls.
 
-## 12. Reproducibility
+## 13. Reproducibility
 
 From the repository root:
 
@@ -235,11 +245,12 @@ python case-studies/sai-bank-security/src/render_svg_charts.py
 
 The fixed seed makes the generated dataset reproducible. `advanced_analysis.py` exports `advanced_metrics.json`, monthly statistics and scenario-level statistics. Reproducibility does not convert synthetic data into real-world evidence.
 
-## 13. References and project links
+## 14. References and project links
 
 - [SAI Bank source repository](https://github.com/pallasivasai/saibank)
 - [SAI Bank demo](https://saibank.lovable.app/)
 - [Companion analytics repository](https://github.com/pallasivasai/docs_)
+- [Threat coverage roadmap](THREAT_COVERAGE_ROADMAP.md)
 - [Generated chart assets](images/)
 
 **Conclusion:** SAI Bank demonstrates useful database-level patterns for safer internal transfers and a bounded wrong-payment recovery workflow. It is a credible foundation for further fintech security engineering, but broader protection requires the roadmap above and independent validation. The defensible claim is specific risk reduction supported by evidence—not elimination of all cyber issues.
