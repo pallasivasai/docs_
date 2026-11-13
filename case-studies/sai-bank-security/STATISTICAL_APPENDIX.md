@@ -83,7 +83,8 @@ From the repository root:
 python -m pip install -r case-studies/sai-bank-security/requirements.txt
 python case-studies/sai-bank-security/src/generate_data.py
 python case-studies/sai-bank-security/src/analyze.py
+python case-studies/sai-bank-security/src/advanced_analysis.py
 python case-studies/sai-bank-security/src/render_svg_charts.py
 ```
 
-The analysis script is the source of truth for generated summary metrics. Regenerate the data and results after changing the seed, generator probabilities or amount distribution.
+`advanced_analysis.py` exports `results/advanced_metrics.json`, `results/advanced_monthly_statistics.csv` and `results/advanced_scenario_statistics.csv`. Regenerate the data and results after changing the seed, generator probabilities or amount distribution.
