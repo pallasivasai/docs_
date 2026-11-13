@@ -229,10 +229,11 @@ From the repository root:
 python -m pip install -r case-studies/sai-bank-security/requirements.txt
 python case-studies/sai-bank-security/src/generate_data.py
 python case-studies/sai-bank-security/src/analyze.py
+python case-studies/sai-bank-security/src/advanced_analysis.py
 python case-studies/sai-bank-security/src/render_svg_charts.py
 ```
 
-The fixed seed makes the generated dataset reproducible. The scripts export CSV/JSON results and chart assets. Reproducibility does not convert synthetic data into real-world evidence.
+The fixed seed makes the generated dataset reproducible. `advanced_analysis.py` exports `advanced_metrics.json`, monthly statistics and scenario-level statistics. Reproducibility does not convert synthetic data into real-world evidence.
 
 ## 13. References and project links
 
