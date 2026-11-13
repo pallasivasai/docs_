@@ -1,0 +1,215 @@
+{
+  "orders_total": 30601,
+  "customers_total": 19329,
+  "revenue_growth_pct": 26.103763760671473,
+  "profit_change_pct": -58.881841155449,
+  "yearly": {
+    "2024": {
+      "orders": 13030.0,
+      "customers": 8388.0,
+      "net_revenue": 34578527.0,
+      "profit": 4513791.6,
+      "profit_margin_pct": 13.0537417050761,
+      "avg_discount_pct": 14.608504490481788,
+      "return_rate_pct": 9.363008442056792,
+      "delivery_pct_of_net_revenue": 2.754457990648358,
+      "acquisition_cost": 700346.0,
+      "tier3_share_of_orders_pct": 20.437452033768228,
+      "new_customers": 8388.0,
+      "paid_ads_share_of_new_customers_pct": 42.572722937529804,
+      "avg_paid_ads_cac": 174.36180341640997
+    },
+    "2025": {
+      "orders": 17571.0,
+      "customers": 14116.0,
+      "net_revenue": 43604824.0,
+      "profit": 1855988.0,
+      "profit_margin_pct": 4.256382275502362,
+      "avg_discount_pct": 20.55870258768256,
+      "return_rate_pct": 11.05230208866883,
+      "delivery_pct_of_net_revenue": 3.277203916704262,
+      "acquisition_cost": 1623225.0,
+      "tier3_share_of_orders_pct": 30.186102100051222,
+      "new_customers": 10941.0,
+      "paid_ads_share_of_new_customers_pct": 58.51384699753221,
+      "avg_paid_ads_cac": 238.47000937207122
+    }
+  },
+  "category_2024": {
+    "Electronics": {
+      "orders": 2508,
+      "avg_discount_pct": 12.93,
+      "return_rate_pct": 8.09,
+      "contribution": 1437359.6,
+      "contribution_margin_pct": 6.86,
+      "profit_lost_to_returns": 821943.4
+    },
+    "Fashion": {
+      "orders": 3869,
+      "avg_discount_pct": 22.33,
+      "return_rate_pct": 18.2,
+      "contribution": 1450166.4,
+      "contribution_margin_pct": 29.25,
+      "profit_lost_to_returns": 687266.6
+    },
+    "Home & Kitchen": {
+      "orders": 2673,
+      "avg_discount_pct": 14.44,
+      "return_rate_pct": 6.62,
+      "contribution": 1590472.4,
+      "contribution_margin_pct": 27.52,
+      "profit_lost_to_returns": 218963.6
+    },
+    "Beauty": {
+      "orders": 1976,
+      "avg_discount_pct": 14.22,
+      "return_rate_pct": 4.96,
+      "contribution": 661562.8,
+      "contribution_margin_pct": 45.51,
+      "profit_lost_to_returns": 56276.2
+    },
+    "Grocery": {
+      "orders": 2004,
+      "avg_discount_pct": 5.69,
+      "return_rate_pct": 1.9,
+      "contribution": 74576.4,
+      "contribution_margin_pct": 5.19,
+      "profit_lost_to_returns": 13818.6
+    }
+  },
+  "category_2025": {
+    "Electronics": {
+      "orders": 3522,
+      "avg_discount_pct": 20.12,
+      "return_rate_pct": 8.12,
+      "contribution": -364699.1,
+      "contribution_margin_pct": -1.36,
+      "profit_lost_to_returns": 768730.1
+    },
+    "Fashion": {
+      "orders": 5343,
+      "avg_discount_pct": 28.7,
+      "return_rate_pct": 22.98,
+      "contribution": 1187170.7,
+      "contribution_margin_pct": 20.02,
+      "profit_lost_to_returns": 1041114.3
+    },
+    "Home & Kitchen": {
+      "orders": 3481,
+      "avg_discount_pct": 17.05,
+      "return_rate_pct": 7.18,
+      "contribution": 1776256.0,
+      "contribution_margin_pct": 24.63,
+      "profit_lost_to_returns": 298221.0
+    },
+    "Beauty": {
+      "orders": 2619,
+      "avg_discount_pct": 16.21,
+      "return_rate_pct": 4.31,
+      "contribution": 817209.9,
+      "contribution_margin_pct": 43.41,
+      "profit_lost_to_returns": 65065.1
+    },
+    "Grocery": {
+      "orders": 2606,
+      "avg_discount_pct": 6.23,
+      "return_rate_pct": 2.49,
+      "contribution": 63275.5,
+      "contribution_margin_pct": 3.44,
+      "profit_lost_to_returns": 25103.5
+    }
+  },
+  "electronics_orders_below_cost_pct_2025": 35.83191368540602,
+  "delivery_cost_pct_of_value_2025": {
+    "Tier 1": {
+      "< ₹500": 12.2,
+      "₹500-999": 6.1,
+      "₹1,000-1,999": 3.2,
+      "₹2,000+": 0.7
+    },
+    "Tier 2": {
+      "< ₹500": 18.9,
+      "₹500-999": 9.6,
+      "₹1,000-1,999": 5.0,
+      "₹2,000+": 1.1
+    },
+    "Tier 3": {
+      "< ₹500": 29.8,
+      "₹500-999": 15.0,
+      "₹1,000-1,999": 7.8,
+      "₹2,000+": 1.7
+    }
+  },
+  "small_tier3_orders_share_pct": 3.9098514597917022,
+  "channel_90d": {
+    "Organic": {
+      "customers": 2148,
+      "cac": 0.0,
+      "contribution": 299.87,
+      "repeat_rate": 12.43,
+      "net_value": 299.87
+    },
+    "Referral": {
+      "customers": 1054,
+      "cac": 60.0,
+      "contribution": 311.56,
+      "repeat_rate": 16.32,
+      "net_value": 251.56
+    },
+    "Paid Ads": {
+      "customers": 4115,
+      "cac": 228.25,
+      "contribution": 272.02,
+      "repeat_rate": 4.81,
+      "net_value": 43.77
+    }
+  },
+  "channel_180d": {
+    "Organic": {
+      "customers": 1465,
+      "cac": 0.0,
+      "contribution": 361.02,
+      "repeat_rate": 24.71,
+      "net_value": 361.02
+    },
+    "Referral": {
+      "customers": 659,
+      "cac": 60.0,
+      "contribution": 378.8,
+      "repeat_rate": 31.11,
+      "net_value": 318.8
+    },
+    "Paid Ads": {
+      "customers": 2507,
+      "cac": 219.35,
+      "contribution": 330.7,
+      "repeat_rate": 10.25,
+      "net_value": 111.35
+    }
+  },
+  "paid_customers_acquired_2025": 6402,
+  "profit_change_by_source_lakh": {
+    "Electronics": -18.02,
+    "Fashion": -2.63,
+    "Home & Kitchen": 1.86,
+    "Beauty": 1.56,
+    "Grocery": -0.11,
+    "Ad & referral cost": -9.23
+  },
+  "paid_repeat_order_margin": 187.69,
+  "discount_cap_sensitivity": {
+    "0.6%": 1345519,
+    "1.2%": 1254802,
+    "2.0%": 1133845
+  },
+  "baseline_profit_2025": 1855988.0,
+  "scenarios": {
+    "A. Cap discounts at 20% (Electronics, Fashion)": 1254802,
+    "B. Cut Fashion returns by 25%": 260279,
+    "C. ₹49 delivery fee on orders under ₹499 (Tier 2/3)": 62430,
+    "D. Win-back journeys for paid-ads customers (+3 pp repeat)": 36049,
+    "All four together": 1613559
+  },
+  "profit_after_all_fixes": 3469546.6293789474,
+  "margin_after_all_fixes_pct": 7.956795398093908
+}
