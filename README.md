@@ -1,98 +1,98 @@
-# SAI Bank — 24-Hour Wrong-Payment Recovery & Transaction Security
+# SAI Bank | Fintech Security Research
 
-**A business-problem and security case study** based on the SAI Bank demonstration application: [github.com/pallasivasai/saibank](https://github.com/pallasivasai/saibank).
+**24-Hour Wrong-Payment Recovery • Database-Level Transaction Integrity • Security Control Assessment**
 
-This project explains the customer problem, shows how SAI Bank's database-level workflow is designed to address it, reviews the implementation evidence, and analyses reproducible synthetic transaction scenarios.
+A research-style case study of [SAI Bank](https://github.com/pallasivasai/saibank), covering the banking problem, product workflow, implementation evidence, synthetic scenario analysis, security gaps and validation roadmap.
 
-> **Important:** SAI Bank is a demonstration application, not a production bank. No product can eliminate every cyber risk. Statistics below are synthetic simulations and repository-review counts, not real customer activity, confirmed fraud, or measured attack-prevention rates.
+> **Research integrity:** SAI Bank is a demonstration application, not a production bank or certified security product. The statistics are synthetic or repository-review counts—not real bank telemetry, confirmed fraud, recovered funds, or measured attack-prevention rates. No product can eliminate every cyber risk.
 
-## 1. The banking problem
+![SAI Bank executive security research dashboard](case-studies/sai-bank-security/images/10_executive_research_dashboard.svg)
 
-A customer sends money to the wrong person, discovers an incorrect transfer, or reports a transaction after the money has moved. If the recipient has already spent the funds, simply crediting the sender can create an unsupported balance. Poorly designed recovery can also cause duplicate reversals or mismatched ledger entries.
+## Research question
 
-**SAI Bank's focus:** safer internal money movement and a controlled recovery request for eligible wrong transfers within 24 hours.
+Can database-level controls make internal transfers safer and provide a controlled, auditable path to recover eligible wrong payments within 24 hours?
+
+## 1. The business problem
+
+A customer sends money to the wrong recipient. The recipient may already have spent the funds. Simply crediting the sender can create an unsupported balance; a poorly designed multi-step reversal can also leave account balances and ledger entries inconsistent.
+
+SAI Bank's focus is safer internal money movement and a bounded wrong-payment recovery workflow—not a claim to stop every cyberattack.
 
 ## 2. How SAI Bank works
 
-![SAI Bank wrong-payment recovery workflow](case-studies/sai-bank-security/images/07_wrong_payment_problem_flow.svg)
+![Wrong-payment recovery workflow](case-studies/sai-bank-security/images/07_wrong_payment_problem_flow.svg)
 
-Example: A sends ₹5,000 to B by mistake and requests recovery two hours later. The procedure authenticates A, checks ownership and eligibility, prevents a second reversal, locks the accounts, and writes compensating ledger entries. If B has already spent the funds, a negative balance can trigger an account freeze; future incoming credits can clear the deficit.
+The recovery procedure checks caller identity, ownership, transaction eligibility, prior reversal and the 24-hour deadline. It locks the relevant accounts and writes compensating ledger entries. If the recipient cannot cover the debit, negative-balance handling can freeze the account until future incoming credits clear the deficit.
 
-The 24-hour period is a request window, not a guarantee that every payment can be recovered. This is an internal-ledger workflow; it cannot guarantee reversal through an external bank, UPI rail or payment provider.
+The 24-hour period is a request window, not a guarantee of recovery. The workflow applies to the application's internal ledger; it cannot guarantee reversal through an external bank, UPI rail or payment provider.
 
-### Why atomic database processing matters
+### Transaction integrity
 
-![SAI Bank atomic transfer and ledger sequence](case-studies/sai-bank-security/images/08_atomic_transfer_sequence.svg)
+![Atomic transfer and ledger sequence](case-studies/sai-bank-security/images/08_atomic_transfer_sequence.svg)
 
-The inspected transfer procedure validates and locks the accounts, updates both balances and writes linked debit/credit entries inside one database transaction. This helps prevent partial money movement, provided every money-changing route uses the guarded procedure.
+The inspected transfer procedure validates and locks accounts, updates both balances and writes linked debit/credit ledger entries inside one database transaction. This depends on every money-changing route using the guarded procedure.
 
-## 3. What the code evidence covers — and what it does not
+## 3. Executive statistics — synthetic experiment
 
-![SAI Bank security coverage scorecard](case-studies/sai-bank-security/images/09_security_coverage_scorecard.svg)
+| Metric | Result | Evidence type |
+|---|---:|---|
+| Generated transfers | 40,000 | Synthetic dataset |
+| Synthetic account identifiers | 2,500 | Synthetic dataset |
+| Planted suspicious labels | 2,412 (6.03%) | Generator-selected labels |
+| Simulated notional on labelled events | ₹45.43 lakh | Synthetic transaction value |
+| Risk scenarios reviewed | 12 | Repository code-review map |
+| Scenarios mapped as mitigated | 3 / 12 | Qualitative code evidence |
+| Partial / review required | 4 / 12 | Qualitative code evidence |
+| No specific control evidenced in inspected app code | 5 / 12 | Scoped code-review gap |
 
-| Risk area | SAI Bank evidence |
-|---|---|
-| Concurrent spending | Atomic database function and row locks |
-| Duplicate reversal | Reversal markers and prior-reversal checks |
-| Wrong payment | 24-hour recovery workflow |
-| Recipient already spent funds | Negative-balance freeze and future-credit clearing |
-| Cross-account access | RLS and ownership checks; full audit required |
-| Account takeover / phishing | Additional controls needed |
-| Stolen sessions / API abuse / replay | MFA, rate limits, session-risk and idempotency controls need implementation/verification |
+The 6.03% is not real attack prevalence. ₹45.43 lakh is not fraud loss, money recovered, loss avoided or ROI. The 3/4/5 mapping is not an attack-block rate or an overall security score.
 
-## 4. SAI Bank synthetic statistics
+## 4. Security coverage
 
-The reproducible generator uses a fixed seed and creates a fictional dataset.
+![Security coverage scorecard](case-studies/sai-bank-security/images/09_security_coverage_scorecard.svg)
 
-| Metric | Synthetic result |
-|---|---:|
-| Generated transfers | 40,000 |
-| Synthetic account identifiers | 2,500 |
-| Planted suspicious-event labels | 2,412 (6.03%) |
-| Simulated transaction notional for labelled events | ₹45.43 lakh |
-| Risk scenarios mapped as mitigated | 3 of 12 (25.0%) |
-| Partial coverage / review required | 4 of 12 (33.3%) |
-| No specific control evidenced in inspected code | 5 of 12 (41.7%) |
+**Evidence currently found:** atomic transfer logic, row locks, linked ledger entries, 24-hour recovery checks, duplicate-reversal checks, negative-balance freeze/future-credit clearing, and initial RLS policies.
 
-These percentages classify reviewed risk scenarios; they are **not** an overall security score or attack-block rate. ₹45.43 lakh is simulated transfer value, not actual fraud loss, recovered funds, loss avoided or ROI.
+**Important work still required:** audit RLS/grants/privileged functions, retire or refactor the legacy multi-request path, add idempotency, MFA/passkeys, rate limits, device/session risk, fraud alerts, scam intervention and independent penetration testing.
 
-### Generated statistical charts
+## 5. Statistical charts
 
-### 4.1 Synthetic banking activity
-![Synthetic SAI Bank transfer activity](case-studies/sai-bank-security/images/01_synthetic_activity.svg)
+### Synthetic transfer activity
+![Synthetic transfer activity](case-studies/sai-bank-security/images/01_synthetic_activity.svg)
 
-### 4.2 Suspicious-event categories
-![Synthetic suspicious-event categories](case-studies/sai-bank-security/images/02_attack_scenarios.svg)
+### Planted suspicious-event categories
+![Suspicious-event categories](case-studies/sai-bank-security/images/02_attack_scenarios.svg)
 
-### 4.3 Simulated transaction notional
-![Simulated notional exposure, not actual fraud loss](case-studies/sai-bank-security/images/03_simulated_exposure.svg)
+### Simulated transaction notional
+![Simulated notional exposure](case-studies/sai-bank-security/images/03_simulated_exposure.svg)
 
-### 4.4 Evidence-based control coverage
+### Evidence-based control coverage
 ![Control coverage](case-studies/sai-bank-security/images/04_control_coverage.svg)
 
-### 4.5 Illustrative control-test fixtures
+### Illustrative control-test fixtures
 ![Control-test fixture matrix](case-studies/sai-bank-security/images/05_control_test_matrix.svg)
 
-The seven test-fixture rows contain hypothetical expected outcomes, not live or production test results. Four assume an expected rejection under stated conditions; three represent controls not evidenced in inspected code. They must be executed against a deployed test environment before any efficacy claim.
+The seven fixture rows describe hypothetical assumptions, not live requests or executed penetration tests. Actual pass rates require executable tests against a controlled deployment.
 
-### 4.6 24-hour recovery lifecycle
+### Recovery lifecycle
 ![24-hour recovery lifecycle](case-studies/sai-bank-security/images/06_24h_recovery_flow.svg)
 
-## 5. Product improvements required for broader protection
+## 6. Validation roadmap
 
-1. Retire or refactor the legacy multi-request money-movement path.
-2. Audit RLS, table grants, privileged functions and execute permissions.
-3. Add idempotency keys, deterministic lock ordering and deadlock retry.
-4. Add MFA/passkeys, rate limiting, bot controls and step-up verification.
-5. Add device/session anomaly detection, alerts, session revocation and fraud monitoring.
-6. Add scam warnings, beneficiary cooling-off and unusual-transfer checks.
-7. Complete independent threat modelling, penetration testing and retesting.
+1. **P0:** Retire the legacy multi-request money-movement path; audit RLS, grants and privileged functions.
+2. **P0:** Add idempotency, deterministic lock ordering and deadlock retry; execute concurrency and replay tests.
+3. **P1:** Add MFA/passkeys, step-up checks, rate limits and bot controls.
+4. **P1:** Add device/session anomaly detection, customer alerts and session revocation.
+5. **P1:** Add scam warnings and beneficiary cooling-off for risky transfers.
+6. **P2:** Add tamper-resistant audit monitoring and commission independent penetration testing.
 
-## 6. Full case study and source
+## 7. Full research report
 
-- [Full SAI Bank security case study](case-studies/sai-bank-security/README.md)
+The [complete SAI Bank Security Research Report](case-studies/sai-bank-security/README.md) includes repository evidence, scenario mapping, test programme, business-impact KPIs, limitations and reproducibility instructions.
+
 - [SAI Bank source repository](https://github.com/pallasivasai/saibank)
 - [SAI Bank demo](https://saibank.lovable.app/)
-- [All generated SAI Bank charts](case-studies/sai-bank-security/images/)
+- [Full research report](case-studies/sai-bank-security/README.md)
+- [Chart assets](case-studies/sai-bank-security/images/)
 
-**Bottom line:** SAI Bank currently demonstrates transaction-integrity and wrong-payment recovery controls. It is a foundation for a broader security product, not a claim that every cyberattack is prevented. The next step is to implement the missing controls and validate the complete system with executable tests and independent security assessment.
+**Conclusion:** SAI Bank demonstrates useful controls for internal transaction integrity and eligible wrong-payment recovery. It is a foundation for a broader fintech security platform, not a claim that all cyber issues are eliminated. Every broader security claim must be backed by implemented controls, executed tests and independent validation.
