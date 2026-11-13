@@ -10,6 +10,8 @@ A research-style case study of [SAI Bank](https://github.com/pallasivasai/saiban
 
 ![Advanced synthetic analytics dashboard](case-studies/sai-bank-security/images/11_advanced_statistics.svg)
 
+![Threat coverage and defense roadmap](case-studies/sai-bank-security/images/12_threat_coverage_roadmap.svg)
+
 ## Research question
 
 Can database-level controls make internal transfers safer and provide a controlled, auditable path to recover eligible wrong payments within 24 hours?
@@ -47,7 +49,7 @@ The inspected transfer procedure validates and locks accounts, updates both bala
 | Partial / review required | 4 / 12 | Qualitative code evidence |
 | No specific control evidenced in inspected app code | 5 / 12 | Scoped code-review gap |
 
-The 6.03% is not real attack prevalence. ₹45.43 lakh is not fraud loss, money recovered, loss avoided or ROI. The 3/4/5 mapping is not an attack-block rate or an overall security score.
+The 6.01% is not real attack prevalence. ₹43.93 lakh is not fraud loss, money recovered, loss avoided or ROI. The 3/4/5 mapping is not an attack-block rate or an overall security score.
 
 ### Advanced statistical profile
 
@@ -61,6 +63,19 @@ The 6.03% is not real attack prevalence. ₹45.43 lakh is not fraud loss, money 
 | Sender concentration (HHI) | 4.70 / 10,000 | Descriptive synthetic diagnostic |
 
 These statistics describe the seeded generator output—not real customers, fraud prevalence, risk prediction or production performance. See the [statistical appendix](case-studies/sai-bank-security/STATISTICAL_APPENDIX.md) for definitions and caveats.
+
+### Current vs planned threat coverage
+
+| Measure | Result | Evidence status |
+|---|---:|---|
+| Threat scenarios reviewed | 12 | Repository review |
+| Current direct mitigation evidence | 3 / 12 (25.0%) | Code-review classification |
+| Partial controls | 4 / 12 (33.3%) | Code-review classification |
+| No specific control evidenced | 5 / 12 (41.7%) | Scoped code-review gap |
+| Scenarios with proposed control workstream | 12 / 12 (100%) | Roadmap planning only |
+| Verified attack-prevention rate | Not measured | Requires executed tests |
+
+**Important:** 100% roadmap mapping does not mean 100% attack prevention. It means all 12 reviewed scenarios have a proposed control and validation plan. See the [threat coverage roadmap](case-studies/sai-bank-security/THREAT_COVERAGE_ROADMAP.md).
 
 ## 4. Security coverage
 
@@ -109,6 +124,7 @@ The [complete SAI Bank Security Research Report](case-studies/sai-bank-security/
 - [SAI Bank demo](https://saibank.lovable.app/)
 - [Full research report](case-studies/sai-bank-security/README.md)
 - [Statistical appendix](case-studies/sai-bank-security/STATISTICAL_APPENDIX.md)
+- [Threat coverage roadmap](case-studies/sai-bank-security/THREAT_COVERAGE_ROADMAP.md)
 - [Chart assets](case-studies/sai-bank-security/images/)
 
 **Conclusion:** SAI Bank demonstrates useful controls for internal transaction integrity and eligible wrong-payment recovery. It is a foundation for a broader fintech security platform, not a claim that all cyber issues are eliminated. Every broader security claim must be backed by implemented controls, executed tests and independent validation.
