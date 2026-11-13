@@ -205,3 +205,10 @@ python src/analysis.py        # recreates images/ and results/
 Built and tested with Python 3.13, pandas 3.0, NumPy 2.5, matplotlib 3.11 and seaborn 0.13. To test a different idea (for example a 15% discount cap, or a ₹29 delivery fee), change the assumptions at the top of `src/analysis.py` and re-run.
 
 **Tools:** Python, pandas, NumPy, matplotlib, seaborn.
+
+
+---
+
+## Additional case studies
+
+- **[SAI Bank Security & Payment Protection](case-studies/sai-bank-security/README.md)** — a reproducible synthetic-data study of database transaction integrity, 24-hour wrong-payment recovery, negative-balance freezes, control coverage, remaining cyber-risk gaps, and six generated charts.
