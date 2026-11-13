@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+<title id="title">SAI Bank security coverage scorecard</title>
+<desc id="desc">A repository-review scorecard across 12 risk scenarios: 3 mitigated by evidenced controls, 4 partially covered or requiring review, and 5 with no specific control evidenced in inspected application code. This is not a production security score.</desc>
+<rect width="1200" height="760" fill="#ffffff"/>
+<text x="60" y="62" font-family="Arial" font-size="32" font-weight="700" fill="#172b4d">SAI Bank — security coverage scorecard</text>
+<text x="60" y="98" font-family="Arial" font-size="17" fill="#526176">12 reviewed risk scenarios • repository evidence mapping • not a production audit</text>
+<g font-family="Arial">
+<rect x="60" y="135" width="330" height="145" rx="18" fill="#e8f5ed" stroke="#27834a" stroke-width="2"/>
+<text x="88" y="180" font-size="18" font-weight="700" fill="#14532d">MITIGATES</text><text x="88" y="235" font-size="54" font-weight="700" fill="#14532d">3 / 12</text><text x="255" y="235" font-size="24" fill="#14532d">25.0%</text>
+<rect x="435" y="135" width="330" height="145" rx="18" fill="#fff5df" stroke="#c88719" stroke-width="2"/>
+<text x="463" y="180" font-size="18" font-weight="700" fill="#704600">PARTIAL / REVIEW</text><text x="463" y="235" font-size="54" font-weight="700" fill="#704600">4 / 12</text><text x="630" y="235" font-size="24" fill="#704600">33.3%</text>
+<rect x="810" y="135" width="330" height="145" rx="18" fill="#fff0ed" stroke="#c65b45" stroke-width="2"/>
+<text x="838" y="180" font-size="18" font-weight="700" fill="#8b2c1c">NOT EVIDENCED</text><text x="838" y="235" font-size="54" font-weight="700" fill="#8b2c1c">5 / 12</text><text x="1005" y="235" font-size="24" fill="#8b2c1c">41.7%</text>
+<text x="60" y="340" font-size="22" font-weight="700" fill="#172b4d">Reviewed risk areas</text>
+<g font-size="17" fill="#344054">
+<text x="75" y="385">✓ Concurrent spending / race condition</text><text x="75" y="420">✓ Duplicate reversal</text><text x="75" y="455">✓ Negative-balance recovery</text>
+<text x="75" y="505">◐ Wrong-recipient recovery</text><text x="75" y="540">◐ Cross-account access / RLS</text><text x="75" y="575">◐ Privileged database access</text><text x="75" y="610">◐ SQL injection surface review</text>
+<text x="650" y="385">! Stolen-session use</text><text x="650" y="420">! Account takeover / credential stuffing</text><text x="650" y="455">! Phishing / social engineering</text><text x="650" y="490">! API rate abuse</text><text x="650" y="525">! Replay / request idempotency</text>
+</g>
+<rect x="60" y="655" width="1080" height="68" rx="12" fill="#f2f4f7"/>
+<text x="85" y="683" font-size="16" font-weight="700" fill="#344054">Interpretation</text>
+<text x="85" y="707" font-size="14" fill="#526176">Counts describe how code evidence maps to scenarios; they are not attack-block rates, a security grade, or proof of deployed controls.</text>
+</g></svg>
